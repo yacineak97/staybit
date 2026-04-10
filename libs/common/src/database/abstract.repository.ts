@@ -1,8 +1,10 @@
-import { NotFoundException } from '@nestjs/common';
+import { Logger, NotFoundException } from '@nestjs/common';
 import { QueryFilter, Model, Types, UpdateQuery } from 'mongoose';
 import { AbstractDocument } from './abstract.schema';
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
+  protected abstract readonly logger: Logger;
+
   constructor(protected readonly model: Model<TDocument>) {}
 
   async save(document: Omit<TDocument, '_id'>): Promise<TDocument> {
@@ -17,6 +19,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     const document = await this.model.findOne(filterQuery).lean();
 
     if (!document) {
+      this.logger.warn('No item found for the provided query', filterQuery);
       throw new NotFoundException('Item not found');
     }
 
@@ -34,6 +37,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
       .lean();
 
     if (!document) {
+      this.logger.warn('No item found for the provided query', filterQuery);
       throw new NotFoundException('Item not found');
     }
 
