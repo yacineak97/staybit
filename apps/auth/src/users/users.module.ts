@@ -15,8 +15,4 @@ import { UsersRepository } from './users.repository';
   providers: [UsersService, UsersRepository],
   exports: [UsersService],
 })
-export class UsersModule {
-  constructor() {
-    console.log('UsersModule initialized');
-  }
-}
+export class UsersModule {}
