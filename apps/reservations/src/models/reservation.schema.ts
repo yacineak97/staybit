@@ -11,6 +11,9 @@ export class ReservationDocument extends AbstractDocument {
 
   @Prop()
   endDate!: Date;
+
+  @Prop()
+  userId!: string;
 }
 
 export const ReservationSchema =
