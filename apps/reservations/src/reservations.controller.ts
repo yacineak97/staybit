@@ -24,7 +24,7 @@ export class ReservationsController {
     @Body() createReservationDto: CreateReservationDto,
     @CurrentUser() user: UserDto,
   ) {
-    return this.reservationsService.save(createReservationDto, user);
+    return await this.reservationsService.save(createReservationDto, user);
   }
 
   @UseGuards(JwtAuthGuard)
