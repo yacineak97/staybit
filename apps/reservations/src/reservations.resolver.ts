@@ -1,35 +1,35 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { ReservationDocument } from './models/reservation.schema';
+import { Reservation } from './models/reservation.entity';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 import { CurrentUser } from '@app/common';
-import type { UserDto } from '@app/common';
+import type { User } from '@app/common';
 
-@Resolver(() => ReservationDocument)
+@Resolver(() => Reservation)
 export class ReservationsResolver {
   constructor(private readonly reservationsService: ReservationsService) {}
 
-  @Mutation(() => ReservationDocument)
+  @Mutation(() => Reservation)
   createReservation(
     @Args('createReservationInput')
     createReservationInput: CreateReservationDto,
-    @CurrentUser() user: UserDto,
+    @CurrentUser() user: User,
   ) {
     return this.reservationsService.save(createReservationInput, user);
   }
 
-  @Query(() => [ReservationDocument], { name: 'reservations' })
+  @Query(() => [Reservation], { name: 'reservations' })
   findAll() {
     return this.reservationsService.findAll();
   }
 
-  @Query(() => ReservationDocument, { name: 'reservation' })
-  findOne(@Args('id', { type: () => String }) id: string) {
+  @Query(() => Reservation, { name: 'reservation' })
+  findOne(@Args('id', { type: () => Number }) id: number) {
     return this.reservationsService.findOne(id);
   }
 
-  @Mutation(() => ReservationDocument)
-  removeReservation(@Args('id', { type: () => String }) id: string) {
+  @Mutation(() => Reservation)
+  removeReservation(@Args('id', { type: () => Number }) id: number) {
     return this.reservationsService.remove(id);
   }
 }

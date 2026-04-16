@@ -59,7 +59,9 @@ services:
       - reservations
       - auth
       - payments
-  mongo:
-    image: mongo
+  postgres:
+    image: postgres:18.4
+    env_file:
+      - .env
     ports:
-      - '27018:27017'
+      - '5432:5432'
