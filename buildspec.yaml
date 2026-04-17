@@ -21,6 +21,9 @@ phases:
 
       - docker build -t notifications -f ./apps/notifications/Dockerfile .
       - docker tag notifications:latest 566778529020.dkr.ecr.eu-north-1.amazonaws.com/notifications:latest
+
+      - docker build -t gateway -f ./apps/gateway/Dockerfile .
+      - docker tag gateway:latest 566778529020.dkr.ecr.eu-north-1.amazonaws.com/gateway:latest
   post_build:
     commands:
       - echo Build completed on `date`
@@ -29,3 +32,4 @@ phases:
       - docker push 566778529020.dkr.ecr.eu-north-1.amazonaws.com/auth:latest
       - docker push 566778529020.dkr.ecr.eu-north-1.amazonaws.com/payments:latest
       - docker push 566778529020.dkr.ecr.eu-north-1.amazonaws.com/notifications:latest
+      - docker push 566778529020.dkr.ecr.eu-north-1.amazonaws.com/gateway:latest
