@@ -6,6 +6,7 @@ COPY package.json ./
 COPY package-lock.json ./
 COPY tsconfig.json tsconfig.json
 COPY nest-cli.json nest-cli.json
+COPY apps/gateway/package.json apps/gateway/package.json
 
 COPY apps/gateway apps/gateway
 COPY libs libs
@@ -23,6 +24,7 @@ WORKDIR /usr/src/app
 
 COPY package.json ./
 COPY package-lock.json ./
+COPY apps/gateway/package.json apps/gateway/package.json
 
 RUN npm install --prod
 
