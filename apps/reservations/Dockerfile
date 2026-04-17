@@ -24,6 +24,7 @@ WORKDIR /usr/src/app
 
 COPY package.json ./
 COPY package-lock.json ./
+COPY apps/reservations/package.json apps/reservations/package.json
 
 RUN npm install --omit=dev
 
