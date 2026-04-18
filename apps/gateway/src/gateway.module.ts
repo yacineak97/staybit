@@ -14,6 +14,8 @@ import { authContext } from './auth.context';
       useFactory: (configService: ConfigService) => ({
         server: {
           context: authContext,
+          csrfPrevention: false,
+          introspection: true,
         },
         gateway: {
           supergraphSdl: new IntrospectAndCompose({
@@ -48,6 +50,8 @@ import { authContext } from './auth.context';
         },
       }),
       inject: [ConfigService],
+      playground: true,
+      csrfPrevention: false,
     }),
     ClientsModule.registerAsync([
       {
