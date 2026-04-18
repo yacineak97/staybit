@@ -50,8 +50,6 @@ import { authContext } from './auth.context';
         },
       }),
       inject: [ConfigService],
-      playground: true,
-      csrfPrevention: false,
     }),
     ClientsModule.registerAsync([
       {
