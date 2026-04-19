@@ -6,6 +6,10 @@ import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { authContext } from './auth.context';
+import {
+  ApolloServerPluginLandingPageLocalDefault,
+  ApolloServerPluginLandingPageProductionDefault,
+} from '@apollo/server/plugin/landingPage/default';
 
 @Module({
   imports: [
@@ -16,6 +20,13 @@ import { authContext } from './auth.context';
           context: authContext,
           csrfPrevention: false,
           introspection: true,
+          plugins: [
+            process.env.NODE_ENV === 'production'
+              ? ApolloServerPluginLandingPageProductionDefault({
+                  footer: false,
+                })
+              : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
+          ],
         },
         gateway: {
           supergraphSdl: new IntrospectAndCompose({
