@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: gateway
+  name: gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gateway
+  template:
+    metadata:
+      labels:
+        app: gateway
+    spec:
+      containers:
+        - image: 566778529020.dkr.ecr.eu-north-1.amazonaws.com/gateway:latest
+          name: gateway
+          env:
+            - name: PORT
+              value: '3004'
+            - name: AUTH_HOST
+              value: auth-tcp
+            - name: AUTH_PORT
+              value: '3002'
+            - name: RESERVATIONS_GRAPHQL_URL
+              value: http://reservations:3000/graphql
+            - name: AUTH_GRAPHQL_URL
+              value: 'http://auth-http:3001/graphql'
+            - name: PAYMENTS_GRAPHQL_URL
+              value: 'http://payments-http:3005/graphql'
+
+          ports:
+            - containerPort: 3004
