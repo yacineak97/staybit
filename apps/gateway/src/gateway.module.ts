@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { AUTH_SERVICE, LoggerModule } from '@app/common';
+import { AUTH_SERVICE, HealthModule, LoggerModule } from '@app/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloGatewayDriver, ApolloGatewayDriverConfig } from '@nestjs/apollo';
 import { IntrospectAndCompose, RemoteGraphQLDataSource } from '@apollo/gateway';
@@ -11,6 +11,12 @@ import {
   ApolloServerPluginLandingPageProductionDefault,
 } from '@apollo/server/plugin/landingPage/default';
 
+const isProd = process.env.NODE_ENV === 'production';
+
+const plugins = isProd
+  ? [ApolloServerPluginLandingPageProductionDefault({ footer: false })]
+  : [];
+
 @Module({
   imports: [
     GraphQLModule.forRootAsync<ApolloGatewayDriverConfig>({
@@ -20,13 +26,7 @@ import {
           context: authContext,
           csrfPrevention: false,
           introspection: true,
-          plugins: [
-            process.env.NODE_ENV === 'production'
-              ? ApolloServerPluginLandingPageProductionDefault({
-                  footer: false,
-                })
-              : ApolloServerPluginLandingPageLocalDefault({ footer: false }),
-          ],
+          plugins,
         },
         gateway: {
           supergraphSdl: new IntrospectAndCompose({
@@ -79,6 +79,7 @@ import {
       isGlobal: true,
     }),
     LoggerModule,
+    HealthModule,
   ],
   controllers: [],
   providers: [],
