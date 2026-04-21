@@ -1,4 +1,3 @@
-import { UnauthorizedException } from '@nestjs/common';
 import { app } from './app';
 import { ClientProxy } from '@nestjs/microservices';
 import { AUTH_SERVICE, User } from '@app/common';
@@ -13,16 +12,23 @@ type AuthContextParams = {
 };
 
 export const authContext = async ({ req }: AuthContextParams) => {
+  const token = req.headers?.authentication;
+
+  if (!token) {
+    return { user: null };
+  }
+
   try {
     const authClient = app.get<ClientProxy>(AUTH_SERVICE);
+
     const user = await lastValueFrom(
       authClient.send<User>('authenticate', {
-        Authentication: req.headers?.authentication,
+        Authentication: token,
       }),
     );
 
     return { user };
-  } catch (err) {
-    throw new UnauthorizedException(err);
+  } catch {
+    return { user: null };
   }
 };
