@@ -7,9 +7,9 @@ metadata:
 spec:
   ports:
     - name: 'tcp'
-      port: 3004
+      port: 3006
       protocol: TCP
-      targetPort: 3004
+      targetPort: 3006
   selector:
     app: gateway
   type: ClusterIP

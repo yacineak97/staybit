@@ -54,7 +54,7 @@ services:
     volumes:
       - .:/usr/src/app
     ports:
-      - '3004:3004'
+      - '3006:3006'
     depends_on:
       - reservations
       - auth

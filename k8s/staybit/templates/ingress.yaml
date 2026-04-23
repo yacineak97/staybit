@@ -30,4 +30,4 @@ spec:
               service:
                 name: gateway
                 port:
-                  number: 3004
+                  number: 3006

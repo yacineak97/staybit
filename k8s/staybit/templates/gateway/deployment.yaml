@@ -19,7 +19,7 @@ spec:
           name: gateway
           env:
             - name: PORT
-              value: '3004'
+              value: '3006'
             - name: AUTH_HOST
               value: auth-tcp
             - name: AUTH_PORT
@@ -32,4 +32,4 @@ spec:
               value: 'http://payments-http:3005/graphql'
 
           ports:
-            - containerPort: 3004
+            - containerPort: 3006
