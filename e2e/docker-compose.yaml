@@ -1,0 +1,111 @@
+services:
+  e2e:
+    build:
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./specs:/usr/src/app/specs
+    depends_on:
+      gateway:
+        condition: service_started
+      reservations:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      payments:
+        condition: service_healthy
+      notifications:
+        condition: service_healthy
+    command: npx jest --runInBand --verbose --detectOpenHandles
+  reservations:
+    image: ghcr.io/yacineak97/reservations:latest
+    env_file:
+      - ../apps/reservations/.env
+      - ../.env
+    ports:
+      - '3000:3000'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').request({method:'POST',host:'localhost',port:3000,path:'/graphql'}, r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1)).end()",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+  auth:
+    image: ghcr.io/yacineak97/auth:latest
+    env_file:
+      - ../apps/auth/.env
+      - ../.env
+    ports:
+      - '3001:3001'
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('http').request({method:'POST',host:'localhost',port:3001,path:'/graphql'}, r => process.exit(r.statusCode < 500 ? 0 : 1)).on('error', () => process.exit(1)).end()",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+  payments:
+    image: ghcr.io/yacineak97/payments:latest
+    ports:
+      - '3003:3003'
+    env_file:
+      - ../apps/payments/.env
+      - ../.env
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('net').connect(3003, 'localhost').on('connect', () => process.exit(0)).on('error', () => process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+  notifications:
+    image: ghcr.io/yacineak97/notifications:latest
+    ports:
+      - '3004:3004'
+    env_file:
+      - ../apps/notifications/.env
+      - ../.env
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'node',
+          '-e',
+          "require('net').connect(3004, 'localhost').on('connect', () => process.exit(0)).on('error', () => process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+  gateway:
+    image: ghcr.io/yacineak97/gateway:latest
+    env_file:
+      - ../apps/gateway/.env
+      - ../.env
+    ports:
+      - '3006:3006'
+    depends_on:
+      reservations:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+      payments:
+        condition: service_healthy
+      notifications:
+        condition: service_healthy
+    restart: on-failure
